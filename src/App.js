@@ -3,7 +3,7 @@ import React from 'react';
 
 const App = () => {
   return<> <h1>This is pdf emdeding</h1>
-  {/* <PdfViewer pdfUrl="/mypdf.pdf" /> */}
+  <PdfViewer pdfUrl="/mypdf.pdf" />
   </>;
 };
 
