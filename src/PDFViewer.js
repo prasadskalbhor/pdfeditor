@@ -2,43 +2,29 @@ import React, { useEffect } from "react";
 
 const PdfViewer = ({ pdfUrl }) => {
   useEffect(() => {
-    // Load the Adobe SDK script dynamically
+    // Dynamically load Adobe SDK
     const script = document.createElement("script");
     script.src = "https://acrobatservices.adobe.com/view-sdk/viewer.js";
     script.onload = () => {
-      // Wait for the SDK to be ready
+      // Initialize Adobe Viewer after the script is loaded
       document.addEventListener("adobe_dc_view_sdk.ready", () => {
         const adobeDCView = new window.AdobeDC.View({
           clientId: "0ce32ffa0d67464397ee278a912258b0", // Replace with your Adobe API key
           divId: "adobe-pdf-viewer",
         });
 
-        // Preview the PDF file with form-filling enabled
+        // Preview the PDF
         adobeDCView.previewFile(
           {
             content: { location: { url: pdfUrl } },
-            metaData: { fileName: "EditableForm.pdf" },
+            metaData: { fileName: "Sample.pdf" },
           },
           {
-            embedMode: "IN_LINE", // Embed mode for inline rendering
-            enableFormFilling: true, // Enable form-filling
+            embedMode: "IN_LINE", // Options: 'IN_LINE', 'LIGHT_BOX', 'FULL_WINDOW'
           }
-        );
-
-        // Register a callback for form submission (optional)
-        adobeDCView.registerCallback(
-          window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-          (event) => {
-            if (event.type === "SAVE") {
-              console.log("Form data submitted:", event.data);
-              alert("Form submitted successfully!");
-            }
-          },
-          { enableFormFilling: true }
         );
       });
     };
-
     document.body.appendChild(script);
 
     // Cleanup script on component unmount
