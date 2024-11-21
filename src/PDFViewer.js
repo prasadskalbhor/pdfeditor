@@ -43,8 +43,8 @@ function AdobePDFViewer({
             metaData: { fileName: pdfUrl }
           }, {
             // Additional configuration options can be added here
-            // showAnnotationTools: true,
-            // dockPageControls: true,
+            showAnnotationTools: false,
+            dockPageControls: false,
             
             embedMode: "FULL_WINDOW",
             defaultViewMode: "FIT_PAGE",
