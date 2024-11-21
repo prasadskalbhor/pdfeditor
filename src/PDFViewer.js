@@ -16,7 +16,7 @@ const PDFViewer = ({ pdfUrl }) => {
       document.addEventListener("adobe_dc_view_sdk.ready", () => {
         // Create Adobe DC View instance
         const dcView = new window.AdobeDC.View({
-          clientId: "YOUR_CLIENT_ID", // Replace with your actual Client ID
+          clientId: "0ce32ffa0d67464397ee278a912258b0", // Replace with your actual Client ID
           divId: "adobe-pdf-viewer",
         });
 
