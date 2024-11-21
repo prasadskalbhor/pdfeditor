@@ -1,62 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-const PdfViewer = ({ pdfUrl }) => {
+function AdobePDFViewer({ 
+  pdfUrl="/mypdf.pdf", 
+  clientId="9a095536ffbb48098fd84853ed513b83", 
+  divId = 'adobe-dc-view',
+  height = '600px',
+  width = '100%'
+}) {
   useEffect(() => {
-    // Check if the Adobe SDK is already loaded
-    if (!document.querySelector('script[src="https://acrobatservices.adobe.com/view-sdk/viewer.js"]')) {
-      const script = document.createElement("script");
-      script.src = "https://acrobatservices.adobe.com/view-sdk/viewer.js";
-      script.onload = () => {
-        initializeAdobeDCView(pdfUrl);
-      };
-      script.onerror = () => {
-        console.error("Failed to load the Adobe View SDK.");
-      };
-      document.body.appendChild(script);
-    } else if (window.AdobeDC) {
-      initializeAdobeDCView(pdfUrl);
-    }
+    // Dynamically load Adobe View SDK
+    const script = document.createElement('script');
+    script.src = 'https://acrobatservices.adobe.com/view-sdk/viewer.js';
+    script.async = true;
+    document.body.appendChild(script);
 
-    // Cleanup on component unmount
-    return () => {
-      const sdkScript = document.querySelector('script[src="https://acrobatservices.adobe.com/view-sdk/viewer.js"]');
-      if (sdkScript) {
-        document.body.removeChild(sdkScript);
-      }
-    };
-  }, [pdfUrl]);
+    script.onload = () => {
+      // Wait for Adobe SDK to be ready
+      document.addEventListener('adobe_dc_view_sdk.ready', () => {
+        if (window.AdobeDC && window.AdobeDC.View) {
+          const adobeDCView = new window.AdobeDC.View({
+            clientId: clientId,
+            divId: divId
+          });
 
-  const initializeAdobeDCView = (pdfUrl) => {
-    document.addEventListener("adobe_dc_view_sdk.ready", () => {
-      const adobeDCView = new window.AdobeDC.View({
-        clientId: "9a095536ffbb48098fd84853ed513b83", // Replace with your API key
-        divId: "adobe-pdf-viewer",
+          adobeDCView.previewFile({
+            content: { location: { url: pdfUrl } },
+            metaData: { fileName: pdfUrl }
+          }, {});
+        }
       });
+    };
 
-      // Preview the PDF file
-      adobeDCView.previewFile(
-        {
-          content: { location: { url: pdfUrl } },
-          metaData: { fileName: "Sample.pdf" },
-        },
-        { embedMode: "IN_LINE", enableFormFilling: true }
-      );
+    // Cleanup function
+    return () => {
+      document.body.removeChild(script);
+      // Remove any lingering event listeners if needed
+    };
+  }, [pdfUrl, clientId, divId]);
 
-      // Register a callback for form submission
-      adobeDCView.registerCallback(
-        window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-        (event) => {
-          if (event.type === "SAVE") {
-            console.log("Form data submitted:", event.data);
-            alert("Form submitted successfully!");
-          }
-        },
-        { enableFormFilling: true }
-      );
-    });
-  };
+  return React.createElement('div', {
+    id: divId,
+    style: {
+      width: width,
+      height: height
+    }
+  });
+}
 
-  return <div id="adobe-pdf-viewer" style={{ height: "100vh" }} />;
-};
-
-export default PdfViewer;
+export default AdobePDFViewer;
