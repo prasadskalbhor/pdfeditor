@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function AdobePDFViewer({ 
   pdfUrl="/mypdf.pdf", 
@@ -7,6 +7,8 @@ function AdobePDFViewer({
   height = '600px',
   width = '100%'
 }) {
+  const [adobeDCView, setAdobeDCView] = useState(null);
+
   useEffect(() => {
     // Dynamically load Adobe View SDK
     const script = document.createElement('script');
@@ -18,15 +20,18 @@ function AdobePDFViewer({
       // Wait for Adobe SDK to be ready
       document.addEventListener('adobe_dc_view_sdk.ready', () => {
         if (window.AdobeDC && window.AdobeDC.View) {
-          const adobeDCView = new window.AdobeDC.View({
+          const dcView = new window.AdobeDC.View({
             clientId: clientId,
             divId: divId
           });
 
-          adobeDCView.previewFile({
+          dcView.previewFile({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl }
           }, {});
+
+          // Store the Adobe DC View instance
+          setAdobeDCView(dcView);
         }
       });
     };
@@ -34,17 +39,46 @@ function AdobePDFViewer({
     // Cleanup function
     return () => {
       document.body.removeChild(script);
-      // Remove any lingering event listeners if needed
     };
   }, [pdfUrl, clientId, divId]);
 
-  return React.createElement('div', {
-    id: divId,
-    style: {
-      width: width,
-      height: height
+  // Function to handle PDF save
+  const handleSavePDF = () => {
+    if (adobeDCView) {
+      console.log("saving pdf now ...");
+      adobeDCView.downloadPDF({
+        fileName: "downloaded.pdf"
+      });
+    } else {
+      console.error("Adobe DC View not initialized");
     }
-  });
+  };
+
+  return (
+    <div>
+      <div 
+        id={divId}
+        style={{
+          width: width,
+          height: height
+        }}
+      />
+      <button 
+        onClick={handleSavePDF}
+        style={{
+          marginTop: '10px',
+          padding: '10px 20px',
+          backgroundColor: '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer'
+        }}
+      >
+        Save PDF
+      </button>
+    </div>
+  );
 }
 
 export default AdobePDFViewer;

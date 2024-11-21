@@ -2,7 +2,7 @@ import React from 'react';
 import PDFViewer from './PDFViewer';
 
 const App = () => {
-  return<> <h1>This is pdf embeding temp</h1>
+  return<> <h1>This is pdf embedin3</h1>
   <PDFViewer pdfUrl="/mypdf.pdf" />
   </>;
 };
