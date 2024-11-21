@@ -27,7 +27,17 @@ function AdobePDFViewer({
             clientId: clientId,
             divId: divId
           });
+          dcView.registerCallback(
+            window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+            (event) => {
+              console.log('Form submitted:');
 
+              if (event.type === 'SAVE') {
+                alert('Form submitted successfully!');
+              }
+            },
+            { enableFormFilling: true }
+          );
           const fileReference = dcView.previewFile({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl }
@@ -36,9 +46,7 @@ function AdobePDFViewer({
             showAnnotationTools: true,
             dockPageControls: true
           });
-          fileReference.addEventListener('FieldChange', (event) => {
-            console.log(`Field changed `);
-          });
+        
           // Store the Adobe DC View and file reference
           setAdobeDCView(dcView);
           setFileRef(fileReference);
