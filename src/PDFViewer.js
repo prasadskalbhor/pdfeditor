@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 
 function AdobePDFViewer({ 
@@ -8,6 +10,7 @@ function AdobePDFViewer({
   width = '100%'
 }) {
   const [adobeDCView, setAdobeDCView] = useState(null);
+  const [fileRef, setFileRef] = useState(null);
 
   useEffect(() => {
     // Dynamically load Adobe View SDK
@@ -25,13 +28,18 @@ function AdobePDFViewer({
             divId: divId
           });
 
-          dcView.previewFile({
+          const fileReference = dcView.previewFile({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl }
-          }, {});
+          }, {
+            // Additional configuration options can be added here
+            showAnnotationTools: true,
+            dockPageControls: true
+          });
 
-          // Store the Adobe DC View instance
+          // Store the Adobe DC View and file reference
           setAdobeDCView(dcView);
+          setFileRef(fileReference);
         }
       });
     };
@@ -44,13 +52,19 @@ function AdobePDFViewer({
 
   // Function to handle PDF save
   const handleSavePDF = () => {
-    if (adobeDCView) {
-      console.log("saving pdf now ...");
-      adobeDCView.downloadPDF({
-        fileName: "downloaded.pdf"
-      });
+    if (adobeDCView && fileRef) {
+      try {
+        adobeDCView.saveAs({
+          url: pdfUrl,
+          fileName: 'downloaded.pdf'
+        });
+      } catch (error) {
+        console.error("Error saving PDF:", error);
+        alert("Unable to save PDF. Please try again.");
+      }
     } else {
-      console.error("Adobe DC View not initialized");
+      console.error("Adobe DC View or File Reference not initialized");
+      alert("PDF viewer is not ready. Please wait and try again.");
     }
   };
 
