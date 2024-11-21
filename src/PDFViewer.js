@@ -36,7 +36,9 @@ function AdobePDFViewer({
             showAnnotationTools: true,
             dockPageControls: true
           });
-
+          fileReference.addEventListener('FieldChange', (event) => {
+            console.log(`Field changed `);
+          });
           // Store the Adobe DC View and file reference
           setAdobeDCView(dcView);
           setFileRef(fileReference);
