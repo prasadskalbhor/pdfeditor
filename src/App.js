@@ -1,9 +1,9 @@
 import React from 'react';
-// import PdfViewer from './PDFViewer';
+import PDFViewer from './PDFViewer';
 
 const App = () => {
   return<> <h1>This is pdf emdeding</h1>
-  <PdfViewer pdfUrl="/mypdf.pdf" />
+  <PDFViewer pdfUrl="/mypdf.pdf" />
   </>;
 };
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button"; // Assuming you're using shadcn/ui buttons
+// import { Button } from "@/components/ui/button"; // Assuming you're using shadcn/ui buttons
 
-const PdfViewer = ({ pdfUrl }) => {
+const PDFViewer = ({ pdfUrl }) => {
   const [adobeDCView, setAdobeDCView] = useState(null);
   const [pdfBytes, setPdfBytes] = useState(null);
 
@@ -114,15 +114,15 @@ const PdfViewer = ({ pdfUrl }) => {
       
       {/* Save Button */}
       <div className="mt-4">
-        <Button 
+        <button 
           onClick={handleSavePdf}
           className="w-full"
         >
           Save PDF
-        </Button>
+        </button>
       </div>
     </div>
   );
 };
 
-export default PdfViewer;
+export default PDFViewer;
