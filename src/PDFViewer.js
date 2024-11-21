@@ -29,7 +29,7 @@ const PdfViewer = ({ pdfUrl }) => {
   const initializeAdobeDCView = (pdfUrl) => {
     document.addEventListener("adobe_dc_view_sdk.ready", () => {
       const adobeDCView = new window.AdobeDC.View({
-        clientId: "0ce32ffa0d67464397ee278a912258b0", // Replace with your API key
+        clientId: "9a095536ffbb48098fd84853ed513b83", // Replace with your API key
         divId: "adobe-pdf-viewer",
       });
 
