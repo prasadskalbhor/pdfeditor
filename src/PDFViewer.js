@@ -1,128 +1,101 @@
-import React, { useEffect, useState } from "react";
-// import { Button } from "@/components/ui/button"; // Assuming you're using shadcn/ui buttons
+import React, { useEffect, useRef, useState } from "react";
 
-const PDFViewer = ({ pdfUrl }) => {
-  const [adobeDCView, setAdobeDCView] = useState(null);
-  const [pdfBytes, setPdfBytes] = useState(null);
+const PdfViewer = ({ pdfUrl }) => {
+  const viewerRef = useRef(null);
+  const [adobeView, setAdobeView] = useState(null);
 
   useEffect(() => {
-    // Load the Adobe SDK script dynamically
+    // Dynamically load Adobe DC View SDK
     const script = document.createElement("script");
     script.src = "https://acrobatservices.adobe.com/view-sdk/viewer.js";
     script.async = true;
-
-    script.onload = () => {
-      // Wait for the SDK to be ready
-      document.addEventListener("adobe_dc_view_sdk.ready", () => {
-        // Create Adobe DC View instance
-        const dcView = new window.AdobeDC.View({
-          clientId: "0ce32ffa0d67464397ee278a912258b0", // Replace with your actual Client ID
-          divId: "adobe-pdf-viewer",
-        });
-
-        setAdobeDCView(dcView);
-
-        // Preview the PDF file with form filling enabled
-        dcView.previewFile({
-          content: { location: { url: pdfUrl } },
-          metaData: { fileName: "Form.pdf" }
-        }, { 
-          embedMode: "IN_LINE", 
-          enableFormFilling: true 
-        });
-
-        // Register callbacks for form interactions
-        dcView.registerCallback(
-          window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-          (event) => {
-            // Handle different event types
-            switch(event.type) {
-              case "DOCUMENT_LOADED":
-                console.log("PDF Document Loaded");
-                break;
-              case "SAVE":
-                // When save is triggered, get the updated PDF bytes
-                dcView.getDocumentBytes({
-                  // Optional: specify content type if needed
-                  contentType: "application/pdf"
-                }).then((documentBytes) => {
-                  // Set the PDF bytes in state
-                  setPdfBytes(documentBytes);
-                  console.log("Updated PDF Bytes:", documentBytes);
-                }).catch((error) => {
-                  console.error("Error getting document bytes:", error);
-                });
-                break;
-            }
-          },
-          { 
-            enableFormFilling: true 
-          }
-        );
-      });
-    };
-
-    // Append script to document
+    script.onload = initializeAdobeViewer;
     document.body.appendChild(script);
 
-    // Cleanup function
     return () => {
       document.body.removeChild(script);
     };
   }, [pdfUrl]);
 
-  // Function to handle manual save and get PDF bytes
-  const handleSavePdf = () => {
-    if (adobeDCView) {
-      adobeDCView.getDocumentBytes({
-        contentType: "application/pdf"
-      }).then((documentBytes) => {
-        setPdfBytes(documentBytes);
-        console.log("Manually Saved PDF Bytes:", documentBytes);
-        
-        // Optional: You can add additional logic here
-        // For example, send bytes to a backend, download, etc.
-        downloadPdf(documentBytes);
-      }).catch((error) => {
-        console.error("Error getting document bytes:", error);
+  const initializeAdobeViewer = () => {
+    // Wait for Adobe SDK to be ready
+    document.addEventListener("adobe_dc_view_sdk.ready", () => {
+      // Create Adobe DC View instance
+      const config = {
+        clientId: "0ce32ffa0d67464397ee278a912258b0", // Replace with your actual Client ID
+        divId: "adobe-dc-view"
+      };
+
+      const view = new window.AdobeDC.View(config);
+
+      // Render PDF with form filling enabled
+      view.previewFile({
+        content: { location: { url: pdfUrl } },
+        metaData: { fileName: "document.pdf" }
+      }, {
+        embedMode: "IN_LINE",
+        showDownloadPDF: false,
+        showPrintPDF: false,
+        enableFormFilling: true  // Critical for form interaction
       });
-    }
+
+      // Store the view instance
+      setAdobeView(view);
+    });
   };
 
-  // Optional: Download PDF function
-  const downloadPdf = (pdfBytes) => {
-    if (pdfBytes) {
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = 'updated-form.pdf';
-      link.click();
+  const handleSavePdf = () => {
+    if (!window.AdobeDC || !adobeView) {
+      console.error("Adobe DC View is not initialized");
+      return;
+    }
+
+    try {
+      // Use the correct method to trigger save
+      adobeView.save({
+        autoClose: false,
+        askForOverwrite: true
+      }).then((res) => {
+        console.log("PDF Saved:", res);
+        // If you want to get the updated PDF bytes
+        if (res.pdf) {
+          console.log("Updated PDF Bytes:", res.pdf);
+          // You can further process res.pdf here
+        }
+      }).catch((error) => {
+        console.error("Save Error:", error);
+      });
+    } catch (error) {
+      console.error("Save Attempt Error:", error);
     }
   };
 
   return (
-    <div className="flex flex-col">
+    <div>
       {/* PDF Viewer Container */}
       <div 
-        id="adobe-pdf-viewer" 
+        id="adobe-dc-view" 
+        ref={viewerRef}
         style={{ 
           width: '100%', 
           height: '70vh', 
           border: '1px solid #ccc' 
         }} 
       />
-      
+
       {/* Save Button */}
-      <div className="mt-4">
-        <button 
-          onClick={handleSavePdf}
-          className="w-full"
-        >
-          Save PDF
-        </button>
-      </div>
+      <button 
+        onClick={handleSavePdf}
+        style={{ 
+          marginTop: '10px', 
+          padding: '10px 20px', 
+          width: '100%' 
+        }}
+      >
+        Save PDF
+      </button>
     </div>
   );
 };
 
-export default PDFViewer;
+export default PdfViewer;
