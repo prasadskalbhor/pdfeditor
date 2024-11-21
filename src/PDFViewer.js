@@ -41,26 +41,29 @@ function AdobePDFViewer({
           const fileReference = dcView.previewFile({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl }
-          },   {
+          }, {
+            // Additional configuration options can be added here
+            showAnnotationTools: true,
+            dockPageControls: true,
+            
             embedMode: "FULL_WINDOW",
             defaultViewMode: "FIT_PAGE",
-            enableLinearization: true,
-            showDownloadPDF: true,
-            showPrintPDF: true,
-            showLeftHandPanel: false,
-            showAnnotationTools: false,
-            enableFormFilling: true,
-            enableAnnotationAPIs: true,
-            includePDFAnnotations: true,
-            showPageControls: false,
-            showZoomControl: true,
-            showRotateControl: false,
-            disableTextSelection: true,
-            annotationManagerEditMode: "READ",
-            showBookmarks:false,
-            showThumbnails:false,
-            
-        });
+            // enableLinearization: true,
+            // showDownloadPDF: true,
+            // showPrintPDF: true,
+            // showLeftHandPanel: false,
+            // showAnnotationTools: false,
+            // enableFormFilling: true,
+            // enableAnnotationAPIs: true,
+            // includePDFAnnotations: true,
+            // showPageControls: false,
+            // showZoomControl: true,
+            // showRotateControl: false,
+            // disableTextSelection: true,
+            // annotationManagerEditMode: "READ",
+            // showBookmarks:false,
+            // showThumbnails:false,
+          });
         
           // Store the Adobe DC View and file reference
           setAdobeDCView(dcView);
