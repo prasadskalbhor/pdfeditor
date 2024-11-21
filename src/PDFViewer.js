@@ -46,10 +46,11 @@ function AdobePDFViewer({
             showAnnotationTools: false,
             dockPageControls: false,
             
-            embedMode: "FULL_WINDOW",
+            // embedMode: "FULL_WINDOW",
             defaultViewMode: "FIT_PAGE",
             // enableLinearization: true,
             showDownloadPDF: true,
+            showSaveButton: true,
             // showPrintPDF: true,
             showLeftHandPanel: false,
             // showAnnotationTools: false,
@@ -59,7 +60,7 @@ function AdobePDFViewer({
             showPageControls: false,
             // showZoomControl: true,
             // showRotateControl: false,
-            // disableTextSelection: true,
+            disableTextSelection: true,
             // annotationManagerEditMode: "READ",
             // showBookmarks:false,
             // showThumbnails:false,
@@ -78,23 +79,6 @@ function AdobePDFViewer({
     };
   }, [pdfUrl, clientId, divId]);
 
-  // Function to handle PDF save
-  const handleSavePDF = () => {
-    if (adobeDCView && fileRef) {
-      try {
-        adobeDCView.saveAs({
-          url: pdfUrl,
-          fileName: 'downloaded.pdf'
-        });
-      } catch (error) {
-        console.error("Error saving PDF:", error);
-        alert("Unable to save PDF. Please try again.");
-      }
-    } else {
-      console.error("Adobe DC View or File Reference not initialized");
-      alert("PDF viewer is not ready. Please wait and try again.");
-    }
-  };
 
   return (
     <div>
@@ -106,7 +90,6 @@ function AdobePDFViewer({
         }}
       />
       <button 
-        onClick={handleSavePDF}
         style={{
           marginTop: '10px',
           padding: '10px 20px',
