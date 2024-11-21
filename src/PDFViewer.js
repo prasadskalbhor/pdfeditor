@@ -26,10 +26,6 @@ const PdfViewer = ({ pdfUrl }) => {
         adobeDCView.registerCallback(
           window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
           (event) => {
-            console.log(
-
-              "Hello:::: ",event.data
-            )
             if (event.type === "SAVE") {
               console.log("Form data submitted:", event.data);
               alert("Form submitted successfully!");
