@@ -49,10 +49,10 @@ function AdobePDFViewer({
               /* file ID */
              id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
           }, {
-            embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
-            enableAnnotationAPIs: true,  // Enable annotation and save functionality
-            showDownloadPDF: false,      // Hide default download button
-            showPrintPDF: false ,
+            // embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
+            // enableAnnotationAPIs: true,  // Enable annotation and save functionality
+            // showDownloadPDF: false,      // Hide default download button
+            // showPrintPDF: false ,
             // Additional configuration options can be added here
             // showAnnotationTools: false,
             // dockPageControls: false,
