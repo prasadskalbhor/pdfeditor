@@ -28,24 +28,45 @@ function AdobePDFViewer({
             divId: divId
           });
           dcView.registerCallback(
-            window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-            (event) => {
-              console.log('Form submitted:');
-
-              if (event.type === 'SAVE') {
-                alert('Form submitted successfully!');
+            adobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+            function (event) {
+              console.log("event triggered")
+              if (event.type === "PAGE_ZOOM") {
+                window.alert("zoom triggered")
+                console.log("Zoom event triggered!");
+                console.log("Zoom level:", event.data.zoom);
               }
             },
-            { enableFormFilling: true }
+            {
+              enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
+            }
           );
           const fileReference = dcView.previewFile({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl }
           }, {
+            // Additional configuration options can be added here
             showAnnotationTools: false,
             dockPageControls: false,
+            
+            // embedMode: "FULL_WINDOW",
+            defaultViewMode: "FIT_PAGE",
+            // enableLinearization: true,
+            showDownloadPDF: true,
+            // showPrintPDF: true,
+            showLeftHandPanel: false,
+            // showAnnotationTools: false,
             enableFormFilling: true, // Ensure form filling is enabled
             showSaveButton: true, // Enable Save button
+            // enableAnnotationAPIs: true,
+            // includePDFAnnotations: true,
+            showPageControls: false,
+            showZoomControl: true,
+            // showRotateControl: false,
+            disableTextSelection: true,
+            // annotationManagerEditMode: "READ",
+            // showBookmarks:false,
+            // showThumbnails:false,
           });
         
           // Store the Adobe DC View and file reference
