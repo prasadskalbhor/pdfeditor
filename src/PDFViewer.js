@@ -36,18 +36,9 @@ function AdobePDFViewer({
            async function (event) {
               try {
                 // Retrieve the updated PDF as a Blob
+                console.log("Hello :: ");
                 const pdfBlob = await event.download();
                 console.log("PDF Blob:", pdfBlob);
-
-                // Example: Trigger a download
-                const url = URL.createObjectURL(pdfBlob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "edited_document.pdf";
-                document.body.appendChild(a);
-                a.click();
-                URL.revokeObjectURL(url);
-                document.body.removeChild(a);
               } catch (error) {
                 console.error("Error fetching updated PDF:", error);
               }
