@@ -30,14 +30,21 @@ function AdobePDFViewer({
           console.log({ dcView });
           
           
-        
+          let viewerInstance;
+
+          // Capture viewer instance to retrieve annotations later
+          dcView.getViewerState().then((instance) => {
+            console.log("thsi is instance :: ",instance);
+            viewerInstance = instance;
+          });
+    
           dcView.registerCallback(
             window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
            async function (event) {
               try {
                 // Retrieve the updated PDF as a Blob
-                console.log("Hello :: ");
-                const pdfBlob = await event.download();
+                console.log("Hello :: ",event);
+                // const pdfBlob = await event.download();
                 console.log("PDF Blob:", pdfBlob);
               } catch (error) {
                 console.error("Error fetching updated PDF:", error);
