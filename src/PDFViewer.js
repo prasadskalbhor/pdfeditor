@@ -27,16 +27,29 @@ function AdobePDFViewer({
             clientId: clientId,
             divId: divId
           });
+          console.log({ dcView });
+          
           
         
-          dcView.registerCallback(
+          dcView.CallbackService(
             window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-            function (event) {
-              console.log("event triggered",event,event.data)
-              if (event.type === "PAGE_ZOOM") {
-                window.alert("zoom triggered")
-                console.log("Zoom event triggered!");
-                console.log("Zoom level:", event.data.zoom);
+           async function (event) {
+              try {
+                // Retrieve the updated PDF as a Blob
+                const pdfBlob = await event.download();
+                console.log("PDF Blob:", pdfBlob);
+
+                // Example: Trigger a download
+                const url = URL.createObjectURL(pdfBlob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "edited_document.pdf";
+                document.body.appendChild(a);
+                a.click();
+                URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+              } catch (error) {
+                console.error("Error fetching updated PDF:", error);
               }
             },
             {
