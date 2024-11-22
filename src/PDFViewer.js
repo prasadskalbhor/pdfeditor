@@ -93,15 +93,29 @@ function AdobePDFViewer({
           document.getElementById("customSaveButton").addEventListener("click", () => {
             console.log("clicked :: ")
             try {
-              dcView.getFormFieldManager().then((formData) => {
-                console.log("Form Data:", formData);
-              
-                // Send the form data to a backend if needed
-              });
+              setTimeout(() => {
+                dcView.getFormFieldValues().then((formData) => {
+                  console.log("Form Data:", formData);
+                
+                  // Send the form data to a backend if needed
+                });
+              }, 5000);
+             
             } catch (error) {
               console.log("error :: ",error)
             }
-          
+            try {
+              setTimeout(() => {
+                dcView.getFormFieldManager().then((formData) => {
+                  console.log("Form Data 1:", formData);
+                
+                  // Send the form data to a backend if needed
+                });
+              }, 5000);
+             
+            } catch (error) {
+              console.log("error1 :: ",error)
+            }
 
             // dcView.getAnnotationManager().then((annotationManager) => {
             //   console.log("Annotation Manager is ready:", annotationManager);
