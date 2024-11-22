@@ -31,7 +31,7 @@ function AdobePDFViewer({
           dcView.registerCallback(
             window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
             function (event) {
-              console.log("event triggered")
+              console.log("event triggered",event,event.data)
               if (event.type === "PAGE_ZOOM") {
                 window.alert("zoom triggered")
                 console.log("Zoom event triggered!");
