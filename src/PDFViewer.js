@@ -28,6 +28,7 @@ function AdobePDFViewer({
             divId: divId
           });
           
+        
           dcView.registerCallback(
             window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
             function (event) {
@@ -44,34 +45,55 @@ function AdobePDFViewer({
           );
           const fileReference = dcView.previewFile({
             content: { location: { url: pdfUrl } },
-            metaData: { fileName: pdfUrl }
+            metaData: { fileName: pdfUrl, 
+              /* file ID */
+             id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
           }, {
+            // embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
+            enableAnnotationAPIs: true,  // Enable annotation and save functionality
+            // showDownloadPDF: false,      // Hide default download button
+            // showPrintPDF: false ,
             // Additional configuration options can be added here
-            showAnnotationTools: false,
-            dockPageControls: false,
+            // showAnnotationTools: false,
+            // dockPageControls: false,
             
             // embedMode: "FULL_WINDOW",
-            defaultViewMode: "FIT_PAGE",
+            // defaultViewMode: "FIT_PAGE",
             // enableLinearization: true,
-            showDownloadPDF: true,
+            // showDownloadPDF: true,
             // showPrintPDF: true,
-            showLeftHandPanel: false,
+            // showLeftHandPanel: false,
             // showAnnotationTools: false,
             enableFormFilling: true, // Ensure form filling is enabled
             showSaveButton: true, // Enable Save button
             // enableAnnotationAPIs: true,
             // includePDFAnnotations: true,
-            showPageControls: false,
-            showZoomControl: true,
+            // showPageControls: false,
+            // showZoomControl: true,
             // showRotateControl: false,
-            disableTextSelection: true,
+            // disableTextSelection: true,
             // annotationManagerEditMode: "READ",
             // showBookmarks:false,
             // showThumbnails:false,
           });
-        
+          document.getElementById("customSaveButton").addEventListener("click", () => {
+            dcView.getAnnotationManager().then((annotationManager) => {
+              console.log("Annotation Manager is ready:", annotationManager);
+              annotationManager
+                .save()
+                .then((blob) => {
+                  console.log("PDF Blob received from custom save:", blob);
+
+                  // Perform further actions with the blob
+                  // uploadPDFToServer(blob);
+                })
+                .catch((error) => {
+                  console.error("Error during custom Save:", error);
+                });
+            });
+          });
           // Store the Adobe DC View and file reference
-          setAdobeDCView(dcView);
+          // setAdobeDCView(dcView);
           setFileRef(fileReference);
         }
       });
@@ -93,7 +115,8 @@ function AdobePDFViewer({
           height: height
         }}
       />
-      <button 
+       <button
+      id='customSaveButton'
         style={{
           marginTop: '10px',
           padding: '10px 20px',
@@ -106,6 +129,7 @@ function AdobePDFViewer({
       >
         Save PDF
       </button>
+    
     </div>
   );
 }
