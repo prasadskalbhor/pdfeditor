@@ -42,28 +42,10 @@ function AdobePDFViewer({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl }
           }, {
-            // Additional configuration options can be added here
             showAnnotationTools: false,
             dockPageControls: false,
-            
-            // embedMode: "FULL_WINDOW",
-            defaultViewMode: "FIT_PAGE",
-            // enableLinearization: true,
-            showDownloadPDF: true,
-            showSaveButton: true,
-            // showPrintPDF: true,
-            showLeftHandPanel: false,
-            // showAnnotationTools: false,
-            enableFormFilling: true,
-            // enableAnnotationAPIs: true,
-            // includePDFAnnotations: true,
-            showPageControls: false,
-            showZoomControl: false,
-            // showRotateControl: false,
-            disableTextSelection: true,
-            // annotationManagerEditMode: "READ",
-            // showBookmarks:false,
-            // showThumbnails:false,
+            enableFormFilling: true, // Ensure form filling is enabled
+            showSaveButton: true, // Enable Save button
           });
         
           // Store the Adobe DC View and file reference
