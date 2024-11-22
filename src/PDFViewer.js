@@ -1,139 +1,135 @@
+ import React, { useEffect, useState } from "react";
 
+const PDFBase64Viewer = () => {
+  const urlToPDF = "https://assets.codepen.io/4479906/Check_Request_Full.pdf";
+  const clientId = "e45ea6964465450fbc12e9a8329542d4";
+  const viewerOptions = {
+    embedMode: "FULL_WINDOW",
+    defaultViewMode: "FIT_PAGE",
+    showDownloadPDF: false,
+    showPrintPDF: true,
+    showLeftHandPanel: false,
+    showAnnotationTools: false,
+  };
+  const saveOptions = {
+    autoSaveFrequency: 1,
+    enableFocusPolling: true,
+    showSaveButton: false,
+  };
 
-import React, { useEffect, useState } from 'react';
+  const [savedPDFContent, setSavedPDFContent] = useState(null);
 
-function AdobePDFViewer({ 
-  pdfUrl="/mypdf.pdf", 
-  clientId="e45ea6964465450fbc12e9a8329542d4", 
-  divId = 'adobe-dc-view',
-  height = '600px',
-  width = '100%'
-}) {
-  const [adobeDCView, setAdobeDCView] = useState(null);
-  const [fileRef, setFileRef] = useState(null);
+  // Convert ArrayBuffer to Base64
+  const arrayBufferToBase64 = (buffer) => {
+    let binary = "";
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+  };
+
+  // Handle Submit Button Click
+  const handleSubmitClick = () => {
+    if (savedPDFContent) {
+      const base64PDF = arrayBufferToBase64(savedPDFContent);
+      const fileURL = `data:application/pdf;base64,${base64PDF}`;
+      window.open(fileURL, "_blank");
+    } else {
+      alert("No PDF content saved. Please try again.");
+    }
+  };
 
   useEffect(() => {
-    // Dynamically load Adobe View SDK
-    const script = document.createElement('script');
-    script.src = 'https://acrobatservices.adobe.com/view-sdk/viewer.js';
-    script.async = true;
-    document.body.appendChild(script);
+    const initializeAdobeViewer = () => {
+      const adobeDCView = new window.AdobeDC.View({
+        clientId,
+        divId: "embeddedView",
+      });
 
-    script.onload = () => {
-      // Wait for Adobe SDK to be ready
-      document.addEventListener('adobe_dc_view_sdk.ready', () => {
-        if (window.AdobeDC && window.AdobeDC.View) {
-          const dcView = new window.AdobeDC.View({
-            clientId: clientId,
-            divId: divId
-          });
-          console.log({ dcView });
-          
-          
-        
-          dcView.registerCallback(
-            window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-            function (event) {
-              console.log("event triggered",event,event.data)
-              if (event.type === "PAGE_ZOOM") {
-                window.alert("zoom triggered")
-                console.log("Zoom event triggered!");
-                console.log("Zoom level:", event.data.zoom);
-              }
-            },
-            {
-              enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
-            }
-          );
-          const fileReference = dcView.previewFile({
-            content: { location: { url: pdfUrl } },
-            metaData: { fileName: pdfUrl, 
-              /* file ID */
-             id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
-          }, {
-            // embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
-            enableAnnotationAPIs: true,  // Enable annotation and save functionality
-            // showDownloadPDF: false,      // Hide default download button
-            // showPrintPDF: false ,
-            // Additional configuration options can be added here
-            // showAnnotationTools: false,
-            // dockPageControls: false,
-            
-            // embedMode: "FULL_WINDOW",
-            // defaultViewMode: "FIT_PAGE",
-            // enableLinearization: true,
-            // showDownloadPDF: true,
-            // showPrintPDF: true,
-            // showLeftHandPanel: false,
-            // showAnnotationTools: false,
-            enableFormFilling: true, // Ensure form filling is enabled
-            showSaveButton: true, // Enable Save button
-            // enableAnnotationAPIs: true,
-            // includePDFAnnotations: true,
-            // showPageControls: false,
-            // showZoomControl: true,
-            // showRotateControl: false,
-            // disableTextSelection: true,
-            // annotationManagerEditMode: "READ",
-            // showBookmarks:false,
-            // showThumbnails:false,
-          });
-          document.getElementById("customSaveButton").addEventListener("click", () => {
-            dcView.getAnnotationManager().then((annotationManager) => {
-              console.log("Annotation Manager is ready:", annotationManager);
-              annotationManager
-                .save()
-                .then((blob) => {
-                  console.log("PDF Blob received from custom save:", blob);
-
-                  // Perform further actions with the blob
-                  // uploadPDFToServer(blob);
-                })
-                .catch((error) => {
-                  console.error("Error during custom Save:", error);
-                });
+      // Register Save Callback
+      adobeDCView.registerCallback(
+        window.AdobeDC.View.Enum.CallbackType.SAVE_API,
+        (metaData, content, options) => {
+          setSavedPDFContent(content); // Store PDF content for download
+          return new Promise((resolve) => {
+            resolve({
+              code: window.AdobeDC.View.Enum.ApiResponseCode.SUCCESS,
+              data: {
+                metaData: { fileName: "Check_Request_Full.pdf" },
+              },
             });
           });
-          // Store the Adobe DC View and file reference
-          // setAdobeDCView(dcView);
-          setFileRef(fileReference);
-        }
-      });
+        },
+        saveOptions
+      );
+
+      // Load PDF into Viewer
+      adobeDCView.previewFile(
+        {
+          content: {
+            location: { url: urlToPDF },
+          },
+          metaData: { fileName: "Check_Request_Full.pdf" },
+        },
+        viewerOptions
+      );
     };
 
-    // Cleanup function
+    // Wait for Adobe SDK to load
+    if (window.AdobeDC) {
+      initializeAdobeViewer();
+    } else {
+      document.addEventListener("adobe_dc_view_sdk.ready", initializeAdobeViewer);
+    }
+
     return () => {
-      document.body.removeChild(script);
+      document.removeEventListener("adobe_dc_view_sdk.ready", initializeAdobeViewer);
     };
-  }, [pdfUrl, clientId, divId]);
-
+  }, []);
 
   return (
-    <div>
-      <div 
-        id={divId}
+    <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
+      <div
         style={{
-          width: width,
-          height: height
-        }}
-      />
-       <button
-      id='customSaveButton'
-        style={{
-          marginTop: '10px',
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer'
+          minHeight: "46px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          padding: "5px",
+          backgroundColor: "crimson",
         }}
       >
-        Save PDF
-      </button>
-    
+        <p style={{ fontSize: "9pt", paddingRight: "10px", margin: "5px", color: "white" }}>
+          Clicking Submit will convert the ArrayBuffer of the PDF file content into a base64 string and then use that in
+          a data URL to download the file. In practice, you would replace this function with one that submits the
+          base64 content to another process where it can be converted back to a binary PDF.
+        </p>
+        <button
+          onClick={handleSubmitClick}
+          style={{
+            backgroundColor: "darkred",
+            height: "100%",
+            padding: "0 20px",
+            borderRadius: "5px",
+            color: "white",
+            fontWeight: "bold",
+            marginRight: "6px",
+            border: "1px solid white",
+            maxHeight: "50px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          Submit
+        </button>
+      </div>
+      <div id="embeddedView" style={{ flexGrow: 1 }}></div>
     </div>
   );
-}
+};
 
-export default AdobePDFViewer;
+export default PDFBase64Viewer;
