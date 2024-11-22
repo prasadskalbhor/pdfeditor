@@ -93,7 +93,7 @@ function AdobePDFViewer({
           document.getElementById("customSaveButton").addEventListener("click", () => {
             console.log("clicked :: ")
             try {
-              dcView.getFormFieldValues().then((formData) => {
+              dcView.getFormFieldManager().then((formData) => {
                 console.log("Form Data:", formData);
               
                 // Send the form data to a backend if needed
