@@ -61,7 +61,7 @@ function AdobePDFViewer({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl, 
               /* file ID */
-             fileId: "77c6fa5d-6d74-4104-8349-657c8411a834" }
+             id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
           }, {
             embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
             enableAnnotationAPIs: true,  // Enable annotation and save functionality
