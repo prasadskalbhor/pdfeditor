@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 
-function AdobePDFViewer({ 
-  pdfUrl="/mypdf.pdf", 
-  clientId="e45ea6964465450fbc12e9a8329542d4", 
+function AdobePDFViewer({
+  pdfUrl = "/mypdf.pdf",
+  clientId = "e45ea6964465450fbc12e9a8329542d4",
   divId = 'adobe-dc-view',
   height = '600px',
   width = '100%'
@@ -27,21 +27,36 @@ function AdobePDFViewer({
             clientId: clientId,
             divId: divId
           });
-          
-          dcView.registerCallback(
-            window.AdobeDC.View.Enum.CallbackType.SAVE_API,
-            function (event) {
-              console.log("event triggered",event,event.data)
-              if (event.type === "PAGE_ZOOM") {
-                window.alert("zoom triggered")
-                console.log("Zoom event triggered!");
-                console.log("Zoom level:", event.data.zoom);
-              }
-            },
-            {
-              enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
-            }
-          );
+          // Assume `adobeDCView` is already defined
+          document.getElementById("customSaveButton").addEventListener("click", () => {
+            dcView.getAnnotationManager().then((annotationManager) => {
+              annotationManager
+                .save()
+                .then((blob) => {
+                  console.log("PDF Blob received from custom save:", blob);
+
+                  // Perform further actions with the blob
+                  // uploadPDFToServer(blob);
+                })
+                .catch((error) => {
+                  console.error("Error during custom Save:", error);
+                });
+            });
+          });
+          // dcView.registerCallback(
+          //   window.AdobeDC.View.Enum.CallbackType.SAVE_API,
+          //   function (event) {
+          //     console.log("event triggered",event,event.data)
+          //     if (event.type === "PAGE_ZOOM") {
+          //       window.alert("zoom triggered")
+          //       console.log("Zoom event triggered!");
+          //       console.log("Zoom level:", event.data.zoom);
+          //     }
+          //   },
+          //   {
+          //     enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
+          //   }
+          // );
           const fileReference = dcView.previewFile({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl }
@@ -49,14 +64,14 @@ function AdobePDFViewer({
             // Additional configuration options can be added here
             showAnnotationTools: false,
             dockPageControls: false,
-            
+
             // embedMode: "FULL_WINDOW",
             defaultViewMode: "FIT_PAGE",
             // enableLinearization: true,
-            showDownloadPDF: false,
+            showDownloadPDF: true,
             // showPrintPDF: true,
             showLeftHandPanel: false,
-            // showAnnotationTools: false,
+            showAnnotationTools: true,
             enableFormFilling: true, // Ensure form filling is enabled
             showSaveButton: true, // Enable Save button
             enableAnnotationAPIs: true,
@@ -69,13 +84,13 @@ function AdobePDFViewer({
             // showBookmarks:false,
             // showThumbnails:false,
           });
-        
+
           // Store the Adobe DC View and file reference
           setAdobeDCView(dcView);
           setFileRef(fileReference);
         }
       });
- 
+
     };
 
     // Cleanup function
@@ -87,14 +102,14 @@ function AdobePDFViewer({
 
   return (
     <div>
-      <div 
+      <div
         id={divId}
         style={{
           width: width,
           height: height
         }}
       />
-      <button 
+      <button
         style={{
           marginTop: '10px',
           padding: '10px 20px',
