@@ -30,7 +30,7 @@ function AdobePDFViewer({
 
 
           dcView.registerCallback(
-            window.AdobeDC.View.Enum.Events.DOCUMENT_SAVE,
+            window.AdobeDC.View.Enum.CallbackType.DOCUMENT_SAVE,
             async function (event) {
               console.log("Save event triggered!");
 
