@@ -35,7 +35,7 @@ function AdobePDFViewer({
           });
 
           // Wait for the form fields to be ready
-          dcView.getFormFieldManager().then((formFieldManager) => {
+          // dcView.getFormFieldManager().then((formFieldManager) => {
             // Button click listener for saving form data
             document.getElementById("customSaveButton").addEventListener("click", () => {
               try {
@@ -51,15 +51,12 @@ function AdobePDFViewer({
                 console.error("Error during form data capture:", error);
               }
             });
-          }).catch(error => {
-            console.error("Error accessing form field manager:", error);
-          });
+     
 
           setFileRef(dcView);  // Save the reference to the Adobe DC View
         }
       });
     };
-
     // Cleanup function to remove the script after the component is unmounted
     return () => {
       document.body.removeChild(script);
