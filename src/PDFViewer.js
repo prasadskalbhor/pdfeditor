@@ -91,22 +91,8 @@ const PDFBase64Viewer = () => {
 
   return (
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div
-        style={{
-          minHeight: "46px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          padding: "5px",
-          backgroundColor: "crimson",
-        }}
-      >
-        <p style={{ fontSize: "9pt", paddingRight: "10px", margin: "5px", color: "white" }}>
-          Clicking Submit will convert the ArrayBuffer of the PDF file content into a base64 string and then use that in
-          a data URL to download the file. In practice, you would replace this function with one that submits the
-          base64 content to another process where it can be converted back to a binary PDF.
-        </p>
-        <button
+      <div id="embeddedView" style={{ flexGrow: 1 }}></div>
+   <button
           onClick={handleSubmitClick}
           style={{
             backgroundColor: "darkred",
@@ -126,8 +112,6 @@ const PDFBase64Viewer = () => {
         >
           Submit
         </button>
-      </div>
-      <div id="embeddedView" style={{ flexGrow: 1 }}></div>
     </div>
   );
 };
