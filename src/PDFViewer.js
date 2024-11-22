@@ -110,6 +110,7 @@ function AdobePDFViewer({
         }}
       />
       <button
+      id='customSaveButton'
         style={{
           marginTop: '10px',
           padding: '10px 20px',
