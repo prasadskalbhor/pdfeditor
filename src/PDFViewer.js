@@ -28,35 +28,21 @@ function AdobePDFViewer({
             divId: divId
           });
           
-          document.getElementById("customSaveButton").addEventListener("click", () => {
-            dcView.getAnnotationManager().then((annotationManager) => {
-              annotationManager
-                .save()
-                .then((blob) => {
-                  console.log("PDF Blob received from custom save:", blob);
-
-                  // Perform further actions with the blob
-                  // uploadPDFToServer(blob);
-                })
-                .catch((error) => {
-                  console.error("Error during custom Save:", error);
-                });
-            });
-          });
-          dcView.registerCallback(
-            window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-            function (event) {
-              console.log("event triggered")
-              if (event.type === "PAGE_ZOOM") {
-                window.alert("zoom triggered")
-                console.log("Zoom event triggered!");
-                console.log("Zoom level:", event.data.zoom);
-              }
-            },
-            {
-              enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
-            }
-          );
+        
+          // dcView.registerCallback(
+          //   window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+          //   function (event) {
+          //     console.log("event triggered")
+          //     if (event.type === "PAGE_ZOOM") {
+          //       window.alert("zoom triggered")
+          //       console.log("Zoom event triggered!");
+          //       console.log("Zoom level:", event.data.zoom);
+          //     }
+          //   },
+          //   {
+          //     enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
+          //   }
+          // );
           const fileReference = dcView.previewFile({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl, 
@@ -90,9 +76,24 @@ function AdobePDFViewer({
             // showBookmarks:false,
             // showThumbnails:false,
           });
-        
+          document.getElementById("customSaveButton").addEventListener("click", () => {
+            dcView.getAnnotationManager().then((annotationManager) => {
+              console.log("Annotation Manager is ready:", annotationManager);
+              annotationManager
+                .save()
+                .then((blob) => {
+                  console.log("PDF Blob received from custom save:", blob);
+
+                  // Perform further actions with the blob
+                  // uploadPDFToServer(blob);
+                })
+                .catch((error) => {
+                  console.error("Error during custom Save:", error);
+                });
+            });
+          });
           // Store the Adobe DC View and file reference
-          setAdobeDCView(dcView);
+          // setAdobeDCView(dcView);
           setFileRef(fileReference);
         }
       });
