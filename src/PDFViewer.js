@@ -30,7 +30,7 @@ function AdobePDFViewer({
           console.log({ dcView });
           
           try {
-            console.log("this is log::",this.adobeDCView.exportPDFAnnotation)
+            console.log("this is log::",this.dcView.exportPDFAnnotation)
           } catch (error) {
             console.log("not working gor error :: ",error)
           }
