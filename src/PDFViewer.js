@@ -1,15 +1,12 @@
-
-
 import React, { useEffect, useState } from 'react';
 
 function AdobePDFViewer({ 
-  pdfUrl="/mypdf.pdf", 
-  clientId="e45ea6964465450fbc12e9a8329542d4", 
+  pdfUrl = "/mypdf.pdf", 
+  clientId = "e45ea6964465450fbc12e9a8329542d4", 
   divId = 'adobe-dc-view',
   height = '600px',
   width = '100%'
 }) {
-  const [adobeDCView, setAdobeDCView] = useState(null);
   const [fileRef, setFileRef] = useState(null);
 
   useEffect(() => {
@@ -27,124 +24,43 @@ function AdobePDFViewer({
             clientId: clientId,
             divId: divId
           });
-          console.log({ dcView });
-          
-          
-        
-          dcView.registerCallback(
-            window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
-           async function (event) {
-              try {
-                console.log("event triggered");
-                // Retrieve the updated PDF as a Blob
-                // const pdfBlob = await event.download();
-                // console.log("PDF Blob:", pdfBlob);
 
-                // // Example: Trigger a download
-                // const url = URL.createObjectURL(pdfBlob);
-                // const a = document.createElement("a");
-                // a.href = url;
-                // a.download = "edited_document.pdf";
-                // document.body.appendChild(a);
-                // a.click();
-                // URL.revokeObjectURL(url);
-                // document.body.removeChild(a);
-              } catch (error) {
-                console.error("Error fetching updated PDF:", error);
-              }
-            },
-            {
-              enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
-            }
-          );
-          const fileReference = dcView.previewFile({
+          dcView.previewFile({
             content: { location: { url: pdfUrl } },
-            metaData: { fileName: pdfUrl, 
-              /* file ID */
-             id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
+            metaData: { fileName: pdfUrl, id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
           }, {
-            // embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
-            enableAnnotationAPIs: true,  // Enable annotation and save functionality
-            // showDownloadPDF: false,      // Hide default download button
-            // showPrintPDF: false ,
-            // Additional configuration options can be added here
-            // showAnnotationTools: false,
-            // dockPageControls: false,
-            
-            // embedMode: "FULL_WINDOW",
-            // defaultViewMode: "FIT_PAGE",
-            // enableLinearization: true,
-            // showDownloadPDF: true,
-            // showPrintPDF: true,
-            // showLeftHandPanel: false,
-            // showAnnotationTools: false,
-            enableFormFilling: true, // Ensure form filling is enabled
-            showSaveButton: true, // Enable Save button
-            // enableAnnotationAPIs: true,
-            // includePDFAnnotations: true,
-            // showPageControls: false,
-            // showZoomControl: true,
-            // showRotateControl: false,
-            // disableTextSelection: true,
-            // annotationManagerEditMode: "READ",
-            // showBookmarks:false,
-            // showThumbnails:false,
+            enableAnnotationAPIs: true,
+            enableFormFilling: true,  // Ensure form filling is enabled
+            showSaveButton: true,     // Enable Save button
           });
+
+          // Button click listener for saving form data
           document.getElementById("customSaveButton").addEventListener("click", () => {
-            console.log("clicked :: ")
             try {
+              // Wait for 5 seconds before capturing form data (for any async loading)
               setTimeout(() => {
                 dcView.getFormFieldValues().then((formData) => {
                   console.log("Form Data:", formData);
-                
-                  // Send the form data to a backend if needed
+                  // Send form data to backend or perform further processing
+                }).catch(error => {
+                  console.error("Error fetching form data:", error);
                 });
-              }, 5000);
-             
+              }, 5000);  // Adjust timeout as needed
             } catch (error) {
-              console.log("error :: ",error)
+              console.error("Error during form data capture:", error);
             }
-            try {
-              setTimeout(() => {
-                dcView.getFormFieldManager().then((formData) => {
-                  console.log("Form Data 1:", formData);
-                
-                  // Send the form data to a backend if needed
-                });
-              }, 5000);
-             
-            } catch (error) {
-              console.log("error1 :: ",error)
-            }
-
-            // dcView.getAnnotationManager().then((annotationManager) => {
-            //   console.log("Annotation Manager is ready:", annotationManager);
-            //   annotationManager
-            //     .save()
-            //     .then((blob) => {
-            //       console.log("PDF Blob received from custom save:", blob);
-
-            //       // Perform further actions with the blob
-            //       // uploadPDFToServer(blob);
-            //     })
-            //     .catch((error) => {
-            //       console.error("Error during custom Save:", error);
-            //     });
-            // });
           });
-          // Store the Adobe DC View and file reference
-          // setAdobeDCView(dcView);
-          setFileRef(fileReference);
+
+          setFileRef(dcView);  // Save the reference to the Adobe DC View
         }
       });
     };
 
-    // Cleanup function
+    // Cleanup function to remove the script after the component is unmounted
     return () => {
       document.body.removeChild(script);
     };
   }, [pdfUrl, clientId, divId]);
-
 
   return (
     <div>
@@ -155,8 +71,8 @@ function AdobePDFViewer({
           height: height
         }}
       />
-       <button
-      id='customSaveButton'
+      <button
+        id="customSaveButton"
         style={{
           marginTop: '10px',
           padding: '10px 20px',
@@ -169,7 +85,6 @@ function AdobePDFViewer({
       >
         Save PDF
       </button>
-    
     </div>
   );
 }
