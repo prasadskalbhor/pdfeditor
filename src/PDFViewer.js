@@ -30,22 +30,25 @@ function AdobePDFViewer({
           console.log({ dcView });
           
           
-          let viewerInstance;
-
-          // Capture viewer instance to retrieve annotations later
-          dcView.getViewerState().then((instance) => {
-            console.log("thsi is instance :: ",instance);
-            viewerInstance = instance;
-          });
-    
+        
           dcView.registerCallback(
             window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
            async function (event) {
               try {
+                console.log("event triggered ");
                 // Retrieve the updated PDF as a Blob
-                console.log("Hello :: ",event);
                 // const pdfBlob = await event.download();
-                console.log("PDF Blob:", pdfBlob);
+                // console.log("PDF Blob:", pdfBlob);
+
+                // // Example: Trigger a download
+                // const url = URL.createObjectURL(pdfBlob);
+                // const a = document.createElement("a");
+                // a.href = url;
+                // a.download = "edited_document.pdf";
+                // document.body.appendChild(a);
+                // a.click();
+                // URL.revokeObjectURL(url);
+                // document.body.removeChild(a);
               } catch (error) {
                 console.error("Error fetching updated PDF:", error);
               }
