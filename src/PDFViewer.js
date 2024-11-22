@@ -29,11 +29,13 @@ function AdobePDFViewer({
           });
           console.log({ dcView });
           
+          
+        
           dcView.registerCallback(
             window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
            async function (event) {
               try {
-                console.log("event triggered ");
+                console.log("event triggered");
                 // Retrieve the updated PDF as a Blob
                 // const pdfBlob = await event.download();
                 // console.log("PDF Blob:", pdfBlob);
@@ -89,21 +91,32 @@ function AdobePDFViewer({
             // showThumbnails:false,
           });
           document.getElementById("customSaveButton").addEventListener("click", () => {
+            console.log("clicked :: ")
+            try {
+              dcView.getFormFieldValues().then((formData) => {
+                console.log("Form Data:", formData);
+              
+                // Send the form data to a backend if needed
+              });
+            } catch (error) {
+              console.log("error :: ",error)
+            }
           
-            dcView.getAnnotationManager().then((annotationManager) => {
-              console.log("Annotation Manager is ready:", annotationManager);
-              annotationManager
-                .save()
-                .then((blob) => {
-                  console.log("PDF Blob received from custom save:", blob);
 
-                  // Perform further actions with the blob
-                  // uploadPDFToServer(blob);
-                })
-                .catch((error) => {
-                  console.error("Error during custom Save:", error);
-                });
-            });
+            // dcView.getAnnotationManager().then((annotationManager) => {
+            //   console.log("Annotation Manager is ready:", annotationManager);
+            //   annotationManager
+            //     .save()
+            //     .then((blob) => {
+            //       console.log("PDF Blob received from custom save:", blob);
+
+            //       // Perform further actions with the blob
+            //       // uploadPDFToServer(blob);
+            //     })
+            //     .catch((error) => {
+            //       console.error("Error during custom Save:", error);
+            //     });
+            // });
           });
           // Store the Adobe DC View and file reference
           // setAdobeDCView(dcView);
