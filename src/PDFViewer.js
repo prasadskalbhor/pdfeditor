@@ -31,7 +31,7 @@ function AdobePDFViewer({
           
           
         
-          dcView.CallbackService(
+          dcView.registerCallback(
             window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
            async function (event) {
               try {
