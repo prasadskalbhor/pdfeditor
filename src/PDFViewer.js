@@ -61,25 +61,29 @@ function AdobePDFViewer({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl }
           }, {
+            embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
+            enableAnnotationAPIs: true,  // Enable annotation and save functionality
+            showDownloadPDF: false,      // Hide default download button
+            showPrintPDF: false          // Hide print button
             // Additional configuration options can be added here
-            showAnnotationTools: false,
-            dockPageControls: false,
+            // showAnnotationTools: false,
+            // dockPageControls: false,
 
             // embedMode: "FULL_WINDOW",
-            defaultViewMode: "FIT_PAGE",
+            // defaultViewMode: "FIT_PAGE",
             // enableLinearization: true,
-            showDownloadPDF: true,
+            // showDownloadPDF: true,
             // showPrintPDF: true,
-            showLeftHandPanel: false,
-            showAnnotationTools: true,
-            enableFormFilling: true, // Ensure form filling is enabled
-            showSaveButton: true, // Enable Save button
-            enableAnnotationAPIs: true,
+            // showLeftHandPanel: false,
+            // showAnnotationTools: true,
+            // enableFormFilling: true, // Ensure form filling is enabled
+            // showSaveButton: true, // Enable Save button
+            // enableAnnotationAPIs: true,
             // includePDFAnnotations: true,
-            showPageControls: false,
-            showZoomControl: true,
+            // showPageControls: false,
+            // showZoomControl: true,
             // showRotateControl: false,
-            disableTextSelection: true,
+            // disableTextSelection: true,
             // annotationManagerEditMode: "READ",
             // showBookmarks:false,
             // showThumbnails:false,
@@ -110,7 +114,7 @@ function AdobePDFViewer({
         }}
       />
       <button
-      id='customSaveButton'
+        id='customSaveButton'
         style={{
           marginTop: '10px',
           padding: '10px 20px',
