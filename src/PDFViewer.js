@@ -1,7 +1,7 @@
  import React, { useEffect, useState } from "react";
 
 const PDFBase64Viewer = () => {
-  const urlToPDF = "https://assets.codepen.io/4479906/Check_Request_Full.pdf";
+  const urlToPDF = "/mypdf.pdf";
   const clientId = "e45ea6964465450fbc12e9a8329542d4";
   const viewerOptions = {
     embedMode: "FULL_WINDOW",
