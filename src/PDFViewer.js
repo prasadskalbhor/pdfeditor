@@ -30,7 +30,10 @@ function AdobePDFViewer({
           console.log({ dcView });
           
           try {
-            console.log("this is log::",this.dcView.exportPDFAnnotation)
+            setTimeout(() => {
+              console.log("this is log::",this.dcView.exportPDFAnnotation)
+              
+            }, 5000);
           } catch (error) {
             console.log("not working gor error :: ",error)
           }
