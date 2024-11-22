@@ -21,85 +21,61 @@ function AdobePDFViewer({
 
     script.onload = () => {
       // Wait for Adobe SDK to be ready
-      // document.addEventListener('adobe_dc_view_sdk.ready', () => {
-      //   if (window.AdobeDC && window.AdobeDC.View) {
-      //     const dcView = new window.AdobeDC.View({
-      //       clientId: clientId,
-      //       divId: divId
-      //     });
+      document.addEventListener('adobe_dc_view_sdk.ready', () => {
+        if (window.AdobeDC && window.AdobeDC.View) {
+          const dcView = new window.AdobeDC.View({
+            clientId: clientId,
+            divId: divId
+          });
           
-      //     dcView.registerCallback(
-      //       window.AdobeDC.View.Enum.CallbackType.SAVE_API,
-      //       function (event) {
-      //         console.log("event triggered",event,event.data)
-      //         if (event.type === "PAGE_ZOOM") {
-      //           window.alert("zoom triggered")
-      //           console.log("Zoom event triggered!");
-      //           console.log("Zoom level:", event.data.zoom);
-      //         }
-      //       },
-      //       {
-      //         enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
-      //       }
-      //     );
-      //     const fileReference = dcView.previewFile({
-      //       content: { location: { url: pdfUrl } },
-      //       metaData: { fileName: pdfUrl }
-      //     }, {
-      //       // Additional configuration options can be added here
-      //       showAnnotationTools: false,
-      //       dockPageControls: false,
+          dcView.registerCallback(
+            window.AdobeDC.View.Enum.CallbackType.SAVE_API,
+            function (event) {
+              console.log("event triggered",event,event.data)
+              if (event.type === "PAGE_ZOOM") {
+                window.alert("zoom triggered")
+                console.log("Zoom event triggered!");
+                console.log("Zoom level:", event.data.zoom);
+              }
+            },
+            {
+              enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
+            }
+          );
+          const fileReference = dcView.previewFile({
+            content: { location: { url: pdfUrl } },
+            metaData: { fileName: pdfUrl }
+          }, {
+            // Additional configuration options can be added here
+            showAnnotationTools: false,
+            dockPageControls: false,
             
-      //       // embedMode: "FULL_WINDOW",
-      //       defaultViewMode: "FIT_PAGE",
-      //       // enableLinearization: true,
-      //       showDownloadPDF: true,
-      //       // showPrintPDF: true,
-      //       showLeftHandPanel: false,
-      //       // showAnnotationTools: false,
-      //       enableFormFilling: true, // Ensure form filling is enabled
-      //       showSaveButton: true, // Enable Save button
-      //       // enableAnnotationAPIs: true,
-      //       // includePDFAnnotations: true,
-      //       showPageControls: false,
-      //       showZoomControl: true,
-      //       // showRotateControl: false,
-      //       disableTextSelection: true,
-      //       // annotationManagerEditMode: "READ",
-      //       // showBookmarks:false,
-      //       // showThumbnails:false,
-      //     });
+            // embedMode: "FULL_WINDOW",
+            defaultViewMode: "FIT_PAGE",
+            // enableLinearization: true,
+            showDownloadPDF: false,
+            // showPrintPDF: true,
+            showLeftHandPanel: false,
+            // showAnnotationTools: false,
+            enableFormFilling: true, // Ensure form filling is enabled
+            showSaveButton: true, // Enable Save button
+            enableAnnotationAPIs: true,
+            // includePDFAnnotations: true,
+            showPageControls: false,
+            showZoomControl: true,
+            // showRotateControl: false,
+            disableTextSelection: true,
+            // annotationManagerEditMode: "READ",
+            // showBookmarks:false,
+            // showThumbnails:false,
+          });
         
-      //     // Store the Adobe DC View and file reference
-      //     setAdobeDCView(dcView);
-      //     setFileRef(fileReference);
-      //   }
-      // });
-      dcView.registerCallback(
-        window.AdobeDC.View.Enum.CallbackType.SAVE_API,
-        function (saveEvent) {
-          console.log("EVENT TRIGGERED :: ",saveEvent);
-          saveEvent
-            .save() // Returns a promise that resolves to the annotated PDF Blob
-            .then(function (blob) {
-              console.log("PDF Blob ready for upload:", blob);
-  
-              // Upload the Blob to your backend
-              const formData = new FormData();
-              formData.append("file", blob, "edited-example.pdf");
-  
-              fetch("/upload-to-s3", {
-                method: "POST",
-                body: formData
-              })
-                .then((response) => response.json())
-                .then((data) => console.log("File uploaded to S3:", data))
-                .catch((err) => console.error("Upload failed:", err));
-            })
-            .catch((err) => console.error("Save failed:", err));
-        },
-        {}
-      );
+          // Store the Adobe DC View and file reference
+          setAdobeDCView(dcView);
+          setFileRef(fileReference);
+        }
+      });
+ 
     };
 
     // Cleanup function
