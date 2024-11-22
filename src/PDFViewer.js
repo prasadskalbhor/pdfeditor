@@ -61,7 +61,7 @@ function AdobePDFViewer({
             content: { location: { url: pdfUrl } },
             metaData: { fileName: pdfUrl, 
               /* file ID */
-             id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
+             fileId: "77c6fa5d-6d74-4104-8349-657c8411a834" }
           }, {
             embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
             enableAnnotationAPIs: true,  // Enable annotation and save functionality
@@ -78,8 +78,8 @@ function AdobePDFViewer({
             // showPrintPDF: true,
             // showLeftHandPanel: false,
             // showAnnotationTools: false,
-            // enableFormFilling: true, // Ensure form filling is enabled
-            // showSaveButton: true, // Enable Save button
+            enableFormFilling: true, // Ensure form filling is enabled
+            showSaveButton: true, // Enable Save button
             // enableAnnotationAPIs: true,
             // includePDFAnnotations: true,
             // showPageControls: false,
