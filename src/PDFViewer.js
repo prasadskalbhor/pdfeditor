@@ -1,12 +1,15 @@
+
+
 import React, { useEffect, useState } from 'react';
 
 function AdobePDFViewer({ 
-  pdfUrl = "/mypdf.pdf", 
-  clientId = "e45ea6964465450fbc12e9a8329542d4", 
+  pdfUrl="/mypdf.pdf", 
+  clientId="e45ea6964465450fbc12e9a8329542d4", 
   divId = 'adobe-dc-view',
   height = '600px',
   width = '100%'
 }) {
+  const [adobeDCView, setAdobeDCView] = useState(null);
   const [fileRef, setFileRef] = useState(null);
 
   useEffect(() => {
@@ -24,44 +27,86 @@ function AdobePDFViewer({
             clientId: clientId,
             divId: divId
           });
-
-          dcView.previewFile({
-            content: { location: { url: pdfUrl } },
-            metaData: { fileName: pdfUrl, id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
-          }, {
-            enableAnnotationAPIs: true,
-            enableFormFilling: true,  // Ensure form filling is enabled
-            showSaveButton: true,     // Enable Save button
-          });
-
-          // Wait for the form fields to be ready
-          // dcView.getFormFieldManager().then((formFieldManager) => {
-            // Button click listener for saving form data
-            document.getElementById("customSaveButton").addEventListener("click", () => {
-              try {
-                setTimeout(() => {
-                  formFieldManager.getFieldValues().then((formData) => {
-                    console.log("Form Data:", formData);
-                    // Send form data to backend or perform further processing
-                  }).catch(error => {
-                    console.error("Error fetching form data:", error);
-                  });
-                }, 5000); // Adjust timeout as needed
-              } catch (error) {
-                console.error("Error during form data capture:", error);
+          console.log({ dcView });
+          
+          
+        
+          dcView.registerCallback(
+            window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+            function (event) {
+              console.log("event triggered",event,event.data)
+              if (event.type === "PAGE_ZOOM") {
+                window.alert("zoom triggered")
+                console.log("Zoom event triggered!");
+                console.log("Zoom level:", event.data.zoom);
               }
-            });
-     
+            },
+            {
+              enablePDFAnalytics: true, // Enables events like PAGE_ZOOM
+            }
+          );
+          const fileReference = dcView.previewFile({
+            content: { location: { url: pdfUrl } },
+            metaData: { fileName: pdfUrl, 
+              /* file ID */
+             id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
+          }, {
+            // embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
+            enableAnnotationAPIs: true,  // Enable annotation and save functionality
+            // showDownloadPDF: false,      // Hide default download button
+            // showPrintPDF: false ,
+            // Additional configuration options can be added here
+            // showAnnotationTools: false,
+            // dockPageControls: false,
+            
+            // embedMode: "FULL_WINDOW",
+            // defaultViewMode: "FIT_PAGE",
+            // enableLinearization: true,
+            // showDownloadPDF: true,
+            // showPrintPDF: true,
+            // showLeftHandPanel: false,
+            // showAnnotationTools: false,
+            enableFormFilling: true, // Ensure form filling is enabled
+            showSaveButton: true, // Enable Save button
+            // enableAnnotationAPIs: true,
+            // includePDFAnnotations: true,
+            // showPageControls: false,
+            // showZoomControl: true,
+            // showRotateControl: false,
+            // disableTextSelection: true,
+            // annotationManagerEditMode: "READ",
+            // showBookmarks:false,
+            // showThumbnails:false,
+          });
+          document.getElementById("customSaveButton").addEventListener("click", () => {
+            dcView.getAnnotationManager().then((annotationManager) => {
+              console.log("Annotation Manager is ready:", annotationManager);
+              annotationManager
+                .save()
+                .then((blob) => {
+                  console.log("PDF Blob received from custom save:", blob);
 
-          setFileRef(dcView);  // Save the reference to the Adobe DC View
+                  // Perform further actions with the blob
+                  // uploadPDFToServer(blob);
+                })
+                .catch((error) => {
+                  console.error("Error during custom Save:", error);
+                });
+            });
+          });
+          // Store the Adobe DC View and file reference
+          // setAdobeDCView(dcView);
+          setFileRef(fileReference);
         }
       });
     };
-    // Cleanup function to remove the script after the component is unmounted
+
+    // Cleanup function
     return () => {
       document.body.removeChild(script);
     };
   }, [pdfUrl, clientId, divId]);
+
 
   return (
     <div>
@@ -72,8 +117,8 @@ function AdobePDFViewer({
           height: height
         }}
       />
-      <button
-        id="customSaveButton"
+       <button
+      id='customSaveButton'
         style={{
           marginTop: '10px',
           padding: '10px 20px',
@@ -86,6 +131,7 @@ function AdobePDFViewer({
       >
         Save PDF
       </button>
+    
     </div>
   );
 }
