@@ -28,6 +28,21 @@ function AdobePDFViewer({
             divId: divId
           });
           
+          document.getElementById("customSaveButton").addEventListener("click", () => {
+            dcView.getAnnotationManager().then((annotationManager) => {
+              annotationManager
+                .save()
+                .then((blob) => {
+                  console.log("PDF Blob received from custom save:", blob);
+
+                  // Perform further actions with the blob
+                  // uploadPDFToServer(blob);
+                })
+                .catch((error) => {
+                  console.error("Error during custom Save:", error);
+                });
+            });
+          });
           dcView.registerCallback(
             window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
             function (event) {
@@ -44,7 +59,9 @@ function AdobePDFViewer({
           );
           const fileReference = dcView.previewFile({
             content: { location: { url: pdfUrl } },
-            metaData: { fileName: pdfUrl }
+            metaData: { fileName: pdfUrl, 
+              /* file ID */
+             id: "77c6fa5d-6d74-4104-8349-657c8411a834" }
           }, {
             embedMode: "SIZED_CONTAINER", // Options: FULL_WINDOW, SIZED_CONTAINER, IN_LINE
             enableAnnotationAPIs: true,  // Enable annotation and save functionality
