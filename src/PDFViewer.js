@@ -105,7 +105,34 @@ function AdobePDFViewer({
     };
   }, [pdfUrl, clientId, divId]);
 
+  const handleSave = () => {
+    if (adobeDCView) {
+      adobeDCView
+        .getAnnotationManager()
+        .then((annotationManager) => {
+          return annotationManager.save(); // Save edited PDF
+        })
+        .then((pdfBlob) => {
+          console.log("PDF Blob received:", pdfBlob);
 
+          // Example: Trigger a download
+          const url = URL.createObjectURL(pdfBlob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "edited_document.pdf";
+          document.body.appendChild(a);
+          a.click();
+          URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        })
+        .catch((error) => {
+          console.error("Error during Save:", error);
+        });
+    } else {
+      console.error("Adobe DC View is not initialized.");
+    }
+  };
+  
   return (
     <div>
       <div 
@@ -115,7 +142,7 @@ function AdobePDFViewer({
           height: height
         }}
       />
-       <button
+       {/* <button
       id='customSaveButton'
         style={{
           marginTop: '10px',
@@ -125,6 +152,20 @@ function AdobePDFViewer({
           border: 'none',
           borderRadius: '5px',
           cursor: 'pointer'
+        }}
+      >
+        Save PDF
+      </button> */}
+      <button
+        onClick={handleSave}
+        style={{
+          marginTop: "10px",
+          padding: "10px 20px",
+          backgroundColor: "#007bff",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
         }}
       >
         Save PDF
