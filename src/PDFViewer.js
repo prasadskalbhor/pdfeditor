@@ -31,7 +31,7 @@ function AdobePDFViewer({
           
           try {
             setTimeout(() => {
-              console.log("this is log::",this.dcView.exportPDFAnnotation)
+              console.log("this is log::",dcView.exportPDFAnnotation)
               
             }, 5000);
           } catch (error) {
@@ -98,6 +98,8 @@ function AdobePDFViewer({
             // showThumbnails:false,
           });
           document.getElementById("customSaveButton").addEventListener("click", () => {
+            
+            setTimeout(() => {
             dcView.getAnnotationManager().then((annotationManager) => {
               console.log("Annotation Manager is ready:", annotationManager);
               annotationManager
@@ -112,6 +114,7 @@ function AdobePDFViewer({
                   console.error("Error during custom Save:", error);
                 });
             });
+          },5000)
           });
           // Store the Adobe DC View and file reference
           // setAdobeDCView(dcView);
