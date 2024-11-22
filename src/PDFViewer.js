@@ -34,21 +34,25 @@ function AdobePDFViewer({
             showSaveButton: true,     // Enable Save button
           });
 
-          // Button click listener for saving form data
-          document.getElementById("customSaveButton").addEventListener("click", () => {
-            try {
-              // Wait for 5 seconds before capturing form data (for any async loading)
-              setTimeout(() => {
-                dcView.getFormFieldValues().then((formData) => {
-                  console.log("Form Data:", formData);
-                  // Send form data to backend or perform further processing
-                }).catch(error => {
-                  console.error("Error fetching form data:", error);
-                });
-              }, 5000);  // Adjust timeout as needed
-            } catch (error) {
-              console.error("Error during form data capture:", error);
-            }
+          // Wait for the form fields to be ready
+          dcView.getFormFieldManager().then((formFieldManager) => {
+            // Button click listener for saving form data
+            document.getElementById("customSaveButton").addEventListener("click", () => {
+              try {
+                setTimeout(() => {
+                  formFieldManager.getFieldValues().then((formData) => {
+                    console.log("Form Data:", formData);
+                    // Send form data to backend or perform further processing
+                  }).catch(error => {
+                    console.error("Error fetching form data:", error);
+                  });
+                }, 5000); // Adjust timeout as needed
+              } catch (error) {
+                console.error("Error during form data capture:", error);
+              }
+            });
+          }).catch(error => {
+            console.error("Error accessing form field manager:", error);
           });
 
           setFileRef(dcView);  // Save the reference to the Adobe DC View
