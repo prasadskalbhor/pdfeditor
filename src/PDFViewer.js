@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 function AdobePDFViewer({ 
   pdfUrl="/mypdf.pdf", 
-  clientId="9a095536ffbb48098fd84853ed513b83", 
+  clientId="e45ea6964465450fbc12e9a8329542d4", 
   divId = 'adobe-dc-view',
   height = '600px',
   width = '100%'
