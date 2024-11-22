@@ -27,8 +27,9 @@ function AdobePDFViewer({
             clientId: clientId,
             divId: divId
           });
+          
           dcView.registerCallback(
-            adobeDC.View.Enum.CallbackType.EVENT_LISTENER,
+            window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
             function (event) {
               console.log("event triggered")
               if (event.type === "PAGE_ZOOM") {
