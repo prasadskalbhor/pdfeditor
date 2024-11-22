@@ -75,8 +75,8 @@ function AdobePDFViewer({
       //     setFileRef(fileReference);
       //   }
       // });
-      adobeDCView.registerCallback(
-        AdobeDC.View.Enum.CallbackType.SAVE_API,
+      dcView.registerCallback(
+        window.AdobeDC.View.Enum.CallbackType.SAVE_API,
         function (saveEvent) {
           console.log("EVENT TRIGGERED :: ",saveEvent);
           saveEvent
