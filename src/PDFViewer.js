@@ -29,7 +29,11 @@ function AdobePDFViewer({
           });
           console.log({ dcView });
           
-          
+          try {
+            console.log("this is log::",this.adobeDCView.exportPDFAnnotation)
+          } catch (error) {
+            console.log("not working gor error :: ",error)
+          }
         
           dcView.registerCallback(
             window.AdobeDC.View.Enum.CallbackType.EVENT_LISTENER,
