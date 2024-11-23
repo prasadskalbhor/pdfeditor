@@ -10,6 +10,7 @@ const PDFBase64Viewer = () => {
     showPrintPDF: true,
     showLeftHandPanel: false,
     showAnnotationTools: false,
+    showFullScreen:true
   };
   const saveOptions = {
     autoSaveFrequency: 1,
