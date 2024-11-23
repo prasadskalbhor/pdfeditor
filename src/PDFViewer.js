@@ -7,10 +7,10 @@ const PDFBase64Viewer = () => {
     embedMode: "FULL_WINDOW",
     defaultViewMode: "FIT_WIDTH",
     showDownloadPDF: false,
-    showPrintPDF: true,
+    showPrintPDF: false,
+    showDownloadPDF: false,
     showLeftHandPanel: false,
     showAnnotationTools: false,
-    showFullScreen:true
   };
   const saveOptions = {
     autoSaveFrequency: 1,
