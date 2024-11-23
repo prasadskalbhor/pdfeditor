@@ -5,7 +5,7 @@ const PDFBase64Viewer = () => {
   const clientId = "e45ea6964465450fbc12e9a8329542d4";
   const viewerOptions = {
     embedMode: "FULL_WINDOW",
-    defaultViewMode: "FIT_PAGE",
+    defaultViewMode: "FIT_WIDTH",
     showDownloadPDF: false,
     showPrintPDF: true,
     showLeftHandPanel: false,
