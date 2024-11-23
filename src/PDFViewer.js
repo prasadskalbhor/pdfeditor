@@ -1,4 +1,4 @@
- import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const PDFBase64Viewer = () => {
   const urlToPDF = "/mypdf.pdf";
@@ -8,12 +8,10 @@ const PDFBase64Viewer = () => {
     defaultViewMode: "FIT_WIDTH",
     showDownloadPDF: false,
     showPrintPDF: false,
-    showDownloadPDF: false,
     showLeftHandPanel: false,
     showAnnotationTools: false,
-    showThumbnails:false,
-    dockPageControls: false, 
-
+    showThumbnails: false,
+    dockPageControls: false,
   };
   const saveOptions = {
     autoSaveFrequency: 1,
@@ -22,6 +20,7 @@ const PDFBase64Viewer = () => {
   };
 
   const [savedPDFContent, setSavedPDFContent] = useState(null);
+  const [adobeDCView, setAdobeDCView] = useState(null);
 
   // Convert ArrayBuffer to Base64
   const arrayBufferToBase64 = (buffer) => {
@@ -45,15 +44,39 @@ const PDFBase64Viewer = () => {
     }
   };
 
+  // Handle Signature Placement
+  const handleAddSignature = () => {
+    if (adobeDCView) {
+      const annotationConfig = {
+        type: "SIGNATURE", // Annotation type
+        rect: { x: 200, y: 300, width: 150, height: 50 }, // Coordinates for placement
+        pageNumber: 1, // Page number to place the signature
+      };
+
+      adobeDCView.getAnnotationManager().then((manager) => {
+        manager.addAnnotation(annotationConfig).then(() => {
+          alert("Signature added successfully.");
+        }).catch((error) => {
+          console.error("Error adding signature:", error);
+          alert("Failed to add signature.");
+        });
+      });
+    } else {
+      alert("Adobe Viewer not initialized.");
+    }
+  };
+
   useEffect(() => {
     const initializeAdobeViewer = () => {
-      const adobeDCView = new window.AdobeDC.View({
+      const adobeDC = new window.AdobeDC.View({
         clientId,
         divId: "embeddedView",
       });
 
+      setAdobeDCView(adobeDC); // Save the AdobeDC instance for further use
+
       // Register Save Callback
-      adobeDCView.registerCallback(
+      adobeDC.registerCallback(
         window.AdobeDC.View.Enum.CallbackType.SAVE_API,
         (metaData, content, options) => {
           setSavedPDFContent(content); // Store PDF content for download
@@ -70,7 +93,7 @@ const PDFBase64Viewer = () => {
       );
 
       // Load PDF into Viewer
-      adobeDCView.previewFile(
+      adobeDC.previewFile(
         {
           content: {
             location: { url: urlToPDF },
@@ -95,27 +118,39 @@ const PDFBase64Viewer = () => {
 
   return (
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div id="embeddedView" style={{ flexGrow: 1,backgroundColor:'red' }}></div>
-   <button
+      <div id="embeddedView" style={{ flexGrow: 1, backgroundColor: "red" }}></div>
+      <div style={{ display: "flex", justifyContent: "space-around", marginTop: "10px" }}>
+        <button
           onClick={handleSubmitClick}
           style={{
             backgroundColor: "darkred",
-            height: "100%",
+            height: "50px",
             padding: "0 20px",
             borderRadius: "5px",
             color: "white",
             fontWeight: "bold",
-            marginRight: "6px",
             border: "1px solid white",
-            maxHeight: "50px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             cursor: "pointer",
           }}
         >
           Submit
         </button>
+        <button
+          onClick={handleAddSignature}
+          style={{
+            backgroundColor: "darkblue",
+            height: "50px",
+            padding: "0 20px",
+            borderRadius: "5px",
+            color: "white",
+            fontWeight: "bold",
+            border: "1px solid white",
+            cursor: "pointer",
+          }}
+        >
+          Add Signature
+        </button>
+      </div>
     </div>
   );
 };
