@@ -91,7 +91,7 @@ const PDFBase64Viewer = () => {
 
   return (
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div id="embeddedView" style={{ flexGrow: 1 }}></div>
+      <div id="embeddedView" style={{ flexGrow: 1,backgroundColor:'red' }}></div>
    <button
           onClick={handleSubmitClick}
           style={{
