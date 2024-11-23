@@ -11,6 +11,9 @@ const PDFBase64Viewer = () => {
     showDownloadPDF: false,
     showLeftHandPanel: false,
     showAnnotationTools: false,
+    showThumbnails:false,
+    dockPageControls: false, 
+
   };
   const saveOptions = {
     autoSaveFrequency: 1,
