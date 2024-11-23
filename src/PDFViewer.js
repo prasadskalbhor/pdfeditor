@@ -1,16 +1,19 @@
- import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const PDFBase64Viewer = () => {
   const urlToPDF = "/mypdf.pdf";
   const clientId = "e45ea6964465450fbc12e9a8329542d4";
   const viewerOptions = {
-    embedMode: "FULL_WINDOW",
-    defaultViewMode: "FIT_PAGE",
+    embedMode: "SIZED_CONTAINER", // Fits the PDF to the container dimensions
+    defaultViewMode: "FIT_PAGE", // Ensures PDF fits within the visible area
     showDownloadPDF: false,
-    showPrintPDF: true,
-    showLeftHandPanel: false,
-    showAnnotationTools: false,
+    showPrintPDF: false, // Hides the print option
+    showLeftHandPanel: false, // Hides the left-hand navigation panel
+    showAnnotationTools: false, // Hides annotation tools
+    showZoomControl: true, // Displays zoom controls
+    dockPageControls: false, // Removes header page controls
   };
+
   const saveOptions = {
     autoSaveFrequency: 1,
     enableFocusPolling: true,
@@ -91,27 +94,27 @@ const PDFBase64Viewer = () => {
 
   return (
     <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div id="embeddedView" style={{ flexGrow: 1 }}></div>
-   <button
-          onClick={handleSubmitClick}
-          style={{
-            backgroundColor: "darkred",
-            height: "100%",
-            padding: "0 20px",
-            borderRadius: "5px",
-            color: "white",
-            fontWeight: "bold",
-            marginRight: "6px",
-            border: "1px solid white",
-            maxHeight: "50px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          Submit
-        </button>
+      <div id="embeddedView" style={{ flexGrow: 1, position: "relative", overflow: "hidden" }}></div>
+      <button
+        onClick={handleSubmitClick}
+        style={{
+          backgroundColor: "darkred",
+          height: "100%",
+          padding: "0 20px",
+          borderRadius: "5px",
+          color: "white",
+          fontWeight: "bold",
+          marginRight: "6px",
+          border: "1px solid white",
+          maxHeight: "50px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+        }}
+      >
+        Submit
+      </button>
     </div>
   );
 };
